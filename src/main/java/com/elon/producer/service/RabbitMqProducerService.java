@@ -26,7 +26,7 @@ public class RabbitMqProducerService {
     private final static String EXCHANGE_NAME = "elon_exchange";
  
     /**
-     * 生产消息
+     * 生产消息发送到队列
      *
      * @param messageBody 消息体
      * @author elon
