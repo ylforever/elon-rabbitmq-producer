@@ -1,5 +1,6 @@
 package com.elon.producer.service;
 
+import com.google.common.base.Charsets;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -20,33 +21,52 @@ import java.util.concurrent.TimeoutException;
 public class RabbitMqProducerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMqProducerService.class);
 
-    private final static String QUEUE_NAME = "elon_queue3";
-
-    private static Channel channel = null;
-    static {
+    private final static String QUEUE_NAME = "elon_queue";
+    
+    private final static String EXCHANGE_NAME = "elon_exchange";
+ 
+    /**
+     * 生产消息
+     *
+     * @param messageBody 消息体
+     * @author elon
+     */
+    public void produceMessage(String messageBody) {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("192.168.43.134");
         factory.setPort(5672);
         factory.setUsername("yzy");
         factory.setPassword("yzy614114");
+
         try {
             Connection connection = factory.newConnection();
-            channel = connection.createChannel();
+            Channel channel = connection.createChannel();
+            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+            channel.basicPublish("", QUEUE_NAME, null, messageBody.getBytes());
+            LOGGER.info("Sent {}", messageBody);
         } catch (Exception e) {
-            LOGGER.error("Init RabbitMq exception.", e);
+            LOGGER.info("Produce message fail.", e);
         }
     }
 
     /**
-     * 生产消息
+     * 生产消息发送到交换器.
      *
      * @param messageBody 消息体
-     * @author yzy
+     * @author elon
      */
-    public void produceMessage(String messageBody) {
+    public void produceMessage2Exchange(String messageBody) {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("192.168.43.134");
+        factory.setPort(5672);
+        factory.setUsername("yzy");
+        factory.setPassword("yzy614114");
+
         try {
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            channel.basicPublish("", QUEUE_NAME, null, messageBody.getBytes());
+            Connection connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+            channel.basicPublish(EXCHANGE_NAME, "", null, messageBody.getBytes(Charsets.UTF_8));
             LOGGER.info("Sent {}", messageBody);
         } catch (Exception e) {
             LOGGER.info("Produce message fail.", e);
