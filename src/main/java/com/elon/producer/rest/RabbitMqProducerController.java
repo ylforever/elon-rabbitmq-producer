@@ -27,4 +27,10 @@ public class RabbitMqProducerController {
     public void produceMessage2Exchange(@RequestBody String messageBody){
         rabbitMqProducerService.produceMessage2Exchange(messageBody);
     }
+
+    @PostMapping("/produce_message_by_topic")
+    @ApiOperation(value = "生产消息byTopic")
+    public void produceMessageByTopic(@RequestBody String messageBody, @RequestBody String topic){
+        rabbitMqProducerService.produceMessageByTopic(messageBody, topic);
+    }
 }
