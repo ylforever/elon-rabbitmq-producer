@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,7 +31,7 @@ public class RabbitMqProducerController {
 
     @PostMapping("/produce_message_by_topic")
     @ApiOperation(value = "生产消息byTopic")
-    public void produceMessageByTopic(@RequestBody String messageBody, @RequestBody String topic){
-        rabbitMqProducerService.produceMessageByTopic(messageBody, topic);
+    public void produceMessageByTopic(@RequestBody String messageBody, @RequestParam("routeKey") String routeKey){
+        rabbitMqProducerService.produceMessageByTopic(messageBody, routeKey);
     }
 }

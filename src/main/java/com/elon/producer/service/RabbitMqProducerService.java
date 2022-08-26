@@ -24,7 +24,9 @@ public class RabbitMqProducerService {
 
     private final static String QUEUE_NAME = "elon_queue";
 
-    private final static String EXCHANGE_NAME = "elon_exchange";
+    private final static String EXCHANGE_FANOUT_NAME = "exchange_fanout_name";
+
+    private final static String EXCHANGE_TOPIC_NAME = "exchange_topic_name";
 
     /**
      * 生产消息发送到队列
@@ -70,8 +72,8 @@ public class RabbitMqProducerService {
         try {
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-            channel.basicPublish(EXCHANGE_NAME, "", null, messageBody.getBytes(Charsets.UTF_8));
+            channel.exchangeDeclare(EXCHANGE_FANOUT_NAME, "fanout");
+            channel.basicPublish(EXCHANGE_FANOUT_NAME, "", null, messageBody.getBytes(Charsets.UTF_8));
             LOGGER.info("Sent {}", messageBody);
         } catch (Exception e) {
             LOGGER.info("Produce message fail.", e);
@@ -88,8 +90,8 @@ public class RabbitMqProducerService {
         try {
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-            channel.basicPublish(EXCHANGE_NAME, routeKey, null, messageBody.getBytes(Charsets.UTF_8));
+            channel.exchangeDeclare(EXCHANGE_TOPIC_NAME, "topic");
+            channel.basicPublish(EXCHANGE_TOPIC_NAME, routeKey, null, messageBody.getBytes(Charsets.UTF_8));
             LOGGER.info("Sent {}", messageBody);
         } catch (Exception e) {
             LOGGER.info("Produce message fail.", e);
